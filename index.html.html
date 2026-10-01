@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXORA AI — Your AI Workspace, Reimagined</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080B18;
+  --surface:#111827;
+  --surface-2:#161f33;
+  --primary:#7C3AED;
+  --secondary:#22D3EE;
+  --accent:#A78BFA;
+  --text:#F8FAFC;
+  --muted:#94A3B8;
+  --border: rgba(148,163,184,0.14);
+  --glow: 0 0 40px rgba(124,58,237,0.25);
+  --radius: 18px;
+  --radius-sm: 12px;
+  --font-head: 'Space Grotesk', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{height:100%;}
+body{
+  background:
+    radial-gradient(1200px 600px at 15% -10%, rgba(124,58,237,0.18), transparent 60%),
+    radial-gradient(900px 500px at 100% 0%, rgba(34,211,238,0.12), transparent 55%),
+    var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  min-height:100vh;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4,.font-head{font-family:var(--font-head); letter-spacing:-0.02em;}
+a{color:inherit; text-decoration:none;}
+button{font-family:var(--font-body); cursor:pointer;}
+::selection{background:rgba(124,58,237,0.4);}
+::-webkit-scrollbar{width:10px; height:10px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(148,163,184,0.25); border-radius:8px;}
+::-webkit-scrollbar-thumb:hover{background:rgba(148,163,184,0.4);}
+
+.container{max-width:1240px; margin:0 auto; padding:0 28px;}
+
+/* Glass surface */
+.glass{
+  background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015));
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.glass-hover{transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;}
+.glass-hover:hover{ transform: translateY(-4px); border-color: rgba(167,139,250,0.4); box-shadow: 0 20px 50px -20px rgba(124,58,237,0.35);}
+
+/* Buttons */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding:12px 22px; border-radius:12px; font-weight:600; font-size:14.5px;
+  border:1px solid transparent; transition: all .2s ease; white-space:nowrap;
+}
+.btn-primary{
+  background: linear-gradient(135deg, var(--primary), #5b21b6 60%, var(--secondary));
+  background-size:160% 160%;
+  color:#fff; box-shadow: 0 10px 30px -8px rgba(124,58,237,0.55);
+}
+.btn-primary:hover{ background-position:100% 0; box-shadow: 0 14px 36px -8px rgba(124,58,237,0.75); transform:translateY(-1px);}
+.btn-ghost{ background:rgba(255,255,255,0.03); border:1px solid var(--border); color:var(--text);}
+.btn-ghost:hover{ border-color:rgba(167,139,250,0.5); background:rgba(255,255,255,0.06);}
+.btn-sm{padding:8px 14px; font-size:13px; border-radius:9px;}
+.btn-icon{padding:9px; border-radius:10px; background:rgba(255,255,255,0.03); border:1px solid var(--border); display:inline-flex; align-items:center; justify-content:center;}
+.btn-icon:hover{background:rgba(255,255,255,0.07); border-color:rgba(167,139,250,0.4);}
+.btn:disabled{opacity:.5; cursor:not-allowed; transform:none !important;}
+
+/* Inputs */
+.field{ display:flex; flex-direction:column; gap:6px; }
+.field label{ font-size:13px; color:var(--muted); font-weight:600;}
+.input, textarea.input, select.input{
+  background:rgba(255,255,255,0.03); border:1px solid var(--border); color:var(--text);
+  padding:12px 14px; border-radius:11px; font-size:14.5px; font-family:var(--font-body);
+  outline:none; transition: border-color .2s ease, background .2s ease; width:100%;
+}
+.input:focus{ border-color:var(--accent); background:rgba(124,58,237,0.06); }
+.input::placeholder{color:#5c6b83;}
+
+/* badges */
+.badge{ display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; padding:5px 11px; border-radius:99px; border:1px solid var(--border); color:var(--muted); background:rgba(255,255,255,0.03);}
+.dot{width:6px; height:6px; border-radius:50%; background:var(--secondary); box-shadow:0 0 8px var(--secondary);}
+
+.gradient-text{
+  background: linear-gradient(90deg, var(--secondary), var(--accent) 50%, var(--primary));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+
+.hidden{display:none !important;}
+.spin{animation: spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes floaty{0%,100%{transform:translateY(0);} 50%{transform:translateY(-14px);}}
+@keyframes pulseGlow{0%,100%{opacity:.55;} 50%{opacity:1;}}
+@keyframes fadeUp{from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);}}
+.fade-up{animation: fadeUp .6s ease both;}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important;}
+}
+
+/* Skeleton loader */
+.skeleton{ background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.09) 37%, rgba(255,255,255,0.04) 63%); background-size:400% 100%; animation: shimmer 1.4s ease infinite; border-radius:10px;}
+@keyframes shimmer{0%{background-position:100% 0;} 100%{background-position:-100% 0;}}
+
+/* Toast */
+#toast-root{ position:fixed; top:20px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:10px; }
+.toast{ min-width:260px; max-width:340px; padding:14px 16px; border-radius:12px; font-size:13.5px; font-weight:500; display:flex; align-items:center; gap:10px; animation: fadeUp .3s ease both; box-shadow:0 20px 40px -15px rgba(0,0,0,0.6);}
+.toast.success{ background:#0f2e28; border:1px solid #1f5c4b; color:#9df5d3;}
+.toast.error{ background:#331319; border:1px solid #6b1f2c; color:#ffb4c0;}
+.toast.info{ background:var(--surface-2); border:1px solid var(--border); color:var(--text);}
+
+/* Modal */
+.modal-overlay{ position:fixed; inset:0; background:rgba(4,6,14,0.7); backdrop-filter:blur(6px); z-index:1000; display:flex; align-items:center; justify-content:center; padding:20px; animation:fadeUp .2s ease both;}
+.modal-box{ width:100%; max-width:420px; padding:26px; }
+
+/* Scrollbar-less horizontal chip row */
+.chip-row{ display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; }
+.chip{ padding:8px 16px; border-radius:99px; font-size:13.5px; font-weight:600; border:1px solid var(--border); color:var(--muted); white-space:nowrap; background:rgba(255,255,255,0.02); transition: all .2s ease;}
+.chip.active{ background:linear-gradient(135deg, var(--primary), var(--secondary)); color:#fff; border-color:transparent;}
+.chip:hover:not(.active){border-color:rgba(167,139,250,0.5); color:var(--text);}
+
+/* Scrollbar hide util */
+.noscroll::-webkit-scrollbar{display:none;}
+
+/* Focus visibility for accessibility */
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, [onclick]:focus-visible{
+  outline:2px solid var(--secondary); outline-offset:2px;
+}
+
+/* Responsive grids */
+@media (max-width: 1000px){
+  .grid-3{ grid-template-columns:repeat(2,1fr) !important; }
+  .grid-4{ grid-template-columns:repeat(2,1fr) !important; }
+}
+@media (max-width: 700px){
+  .grid-3, .grid-4, .grid-2{ grid-template-columns:1fr !important; }
+  .nav-links{ display:none !important; }
+  .topbar-search{ max-width:160px !important; }
+  .hide-mobile{ display:none !important; }
+}
+@media (max-width: 900px){
+  .mobile-only{ display:inline-flex !important; }
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast-root"></div>
+<script>
+/* ============ NEXORA AI — Application Core ============ */
+
+const APP = document.getElementById('app');
+const uid = () => Math.random().toString(36).slice(2,10) + Date.now().toString(36).slice(-4);
+const nowISO = () => new Date().toISOString();
+const escapeHtml = (s='') => s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+function fmtDate(iso){
+  const d = new Date(iso);
+  return d.toLocaleDateString(undefined, { month:'short', day:'numeric', year:'numeric' });
+}
+function fmtTime(iso){
+  const d = new Date(iso);
+  return d.toLocaleTimeString(undefined, { hour:'2-digit', minute:'2-digit' });
+}
+function fmtRelative(iso){
+  const diff = Date.now() - new Date(iso).getTime();
+  const mins = Math.floor(diff/60000);
+  if(mins < 1) return 'just now';
+  if(mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins/60);
+  if(hrs < 24) return `${hrs}h ago`;
+  const days = Math.floor(hrs/24);
+  if(days < 7) return `${days}d ago`;
+  return fmtDate(iso);
+}
+function fmtBytes(n){
+  if(n < 1024) return n + ' B';
+  if(n < 1024*1024) return (n/1024).toFixed(1) + ' KB';
+  return (n/(1024*1024)).toFixed(1) + ' MB';
+}
+function fmtNum(n){ return n.toLocaleString(); }
+
+/* ============ Toast ============ */
+function toast(msg, type='info'){
+  const root = document.getElementById('toast-root');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  const icon = type==='success' ? '✓' : type==='error' ? '✕' : 'ℹ';
+  el.innerHTML = `<span style="font-weight:800">${icon}</span><span>${escapeHtml(msg)}</span>`;
+  root.appendChild(el);
+  setTimeout(()=>{ el.style.opacity='0'; el.style.transform='translateY(-8px)'; el.style.transition='all .3s ease'; setTimeout(()=>el.remove(), 300); }, 3200);
+}
+
+/* ============ Persistent Storage Wrapper ============ */
+const DB_KEY = 'nexora:v1';
+async function dbLoad(){
+  try{
+    const res = await window.storage.get(DB_KEY, false);
+    if(res && res.value) return JSON.parse(res.value);
+  }catch(e){ /* not found or error */ }
+  return null;
+}
+async function dbSave(data){
+  try{
+    await window.storage.set(DB_KEY, JSON.stringify(data), false);
+  }catch(e){ console.error('storage save failed', e); toast('Could not save data — changes may not persist.', 'error'); }
+}
+
+function defaultData(user){
+  return {
+    user,
+    conversations: [],
+    files: [],
+    prompts: [
+      { id: uid(), title:'Weekly Report Summary', content:'Summarize the following weekly report into 5 concise bullet points highlighting key wins, risks, and next steps:', category:'Productivity', createdAt: nowISO() },
+      { id: uid(), title:'Cold Outreach Email', content:'Write a short, friendly cold outreach email introducing our product to a potential B2B client in the SaaS space:', category:'Marketing', createdAt: nowISO() },
+      { id: uid(), title:'Code Review Checklist', content:'Review the following code for bugs, readability issues, and performance improvements. List issues by severity:', category:'Development', createdAt: nowISO() },
+    ],
+    usage: [],
+    favTools: [],
+    settings: {
+      theme:'dark', defaultModel:'nexora-pro', responseLength:'balanced',
+      notifyEmail:true, notifyProduct:true, notifyUsage:false,
+    },
+    plan: 'Free',
+  };
+}
+
+function seedUsageIfEmpty(data){
+  if(data.usage && data.usage.length) return;
+  const tools = ['AI Chat','AI Writer','Code Generator','AI Summarizer','Document Analyzer','AI Translator'];
+  const usage = [];
+  for(let i=27;i>=0;i--){
+    const d = new Date(Date.now() - i*86400000);
+    const reqs = Math.floor(Math.random()*6);
+    for(let r=0;r<reqs;r++){
+      usage.push({ tool: tools[Math.floor(Math.random()*tools.length)], tokens: Math.floor(200+Math.random()*1800), createdAt: d.toISOString() });
+    }
+  }
+  data.usage = usage;
+}
+
+/* ============ Global App State ============ */
+let DATA = null; // loaded data blob for current user
+let VIEW = 'landing'; // landing | login | signup | forgot | app
+let APP_TAB = 'home'; // home | chat | tools | files | history | prompts | analytics | billing | settings
+let UI = { sidebarCollapsed:false, mobileNav:false, toolCategory:'All', toolSearch:'', historySearch:'', promptSearch:'', fileSearch:'', settingsTab:'profile' };
+
+async function boot(){
+  APP.innerHTML = landingLoadingSkeleton();
+  const saved = await dbLoad();
+  if(saved && saved.user){
+    DATA = saved;
+    seedUsageIfEmpty(DATA);
+    VIEW = 'app';
+  } else {
+    VIEW = 'landing';
+  }
+  render();
+}
+
+function landingLoadingSkeleton(){
+  return `<div style="min-height:100vh; display:flex; align-items:center; justify-content:center;">
+    <div style="width:44px;height:44px;border-radius:50%;border:3px solid rgba(124,58,237,0.25); border-top-color:var(--primary);" class="spin"></div>
+  </div>`;
+}
+
+function setView(v){ VIEW = v; window.scrollTo(0,0); render(); }
+function setTab(t){ APP_TAB = t; UI.mobileNav = false; render(); }
+
+/* ============ Render Dispatcher ============ */
+function render(){
+  if(VIEW === 'landing') APP.innerHTML = viewLanding();
+  else if(VIEW === 'login') APP.innerHTML = viewLogin();
+  else if(VIEW === 'signup') APP.innerHTML = viewSignup();
+  else if(VIEW === 'forgot') APP.innerHTML = viewForgot();
+  else if(VIEW === 'app') APP.innerHTML = viewAppShell();
+  afterRender();
+}
+
+function afterRender(){
+  // hook: scroll active chat to bottom, focus composer, etc.
+  if(VIEW === 'app' && APP_TAB === 'chat'){
+    const box = document.getElementById('chat-scroll');
+    if(box) box.scrollTop = box.scrollHeight;
+  }
+}
+
+boot();
+/* ============ Landing Page ============ */
+function navPublic(){
+  return `
+  <header style="position:sticky; top:0; z-index:100; backdrop-filter:blur(16px); background:rgba(8,11,24,0.7); border-bottom:1px solid var(--border);">
+    <div class="container" style="display:flex; align-items:center; justify-content:space-between; height:74px;">
+      ${logoMark()}
+      <nav style="display:flex; gap:32px;" class="nav-links">
+        <a href="#features" style="color:var(--muted); font-size:14.5px; font-weight:500;">Features</a>
+        <a href="#tools" style="color:var(--muted); font-size:14.5px; font-weight:500;">AI Tools</a>
+        <a href="#pricing" style="color:var(--muted); font-size:14.5px; font-weight:500;">Pricing</a>
+        <a href="#faq" style="color:var(--muted); font-size:14.5px; font-weight:500;">FAQ</a>
+      </nav>
+      <div style="display:flex; gap:10px; align-items:center;">
+        <button class="btn btn-ghost btn-sm" onclick="setView('login')">Log in</button>
+        <button class="btn btn-primary btn-sm" onclick="setView('signup')">Get Started</button>
+      </div>
+    </div>
+  </header>`;
+}
+
+function logoMark(sizeClass=''){
+  return `<div style="display:flex; align-items:center; gap:10px; cursor:pointer;" onclick="setView('landing')">
+    <div style="width:34px;height:34px;border-radius:10px; background:linear-gradient(135deg, var(--primary), var(--secondary)); position:relative; display:flex; align-items:center; justify-content:center; box-shadow:0 0 18px rgba(124,58,237,0.55);">
+      <div style="width:12px;height:12px;border-radius:3px; background:#fff; transform:rotate(45deg);"></div>
+    </div>
+    <span class="font-head" style="font-weight:700; font-size:19px; letter-spacing:-0.01em;">NEXORA <span style="color:var(--secondary)">AI</span></span>
+  </div>`;
+}
+
+function heroOrb(){
+  return `
+  <div style="position:relative; width:100%; max-width:460px; aspect-ratio:1; margin:0 auto;">
+    <div style="position:absolute; inset:0; border-radius:50%; background:radial-gradient(circle at 35% 30%, rgba(167,139,250,0.9), rgba(124,58,237,0.5) 40%, rgba(34,211,238,0.15) 70%, transparent 75%); filter:blur(2px); animation: pulseGlow 4s ease-in-out infinite;"></div>
+    <svg viewBox="0 0 400 400" style="position:absolute; inset:0; width:100%; height:100%;">
+      <defs>
+        <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#22D3EE"/>
+          <stop offset="100%" stop-color="#7C3AED"/>
+        </linearGradient>
+      </defs>
+      <g style="transform-origin:200px 200px; animation: spin 18s linear infinite;">
+        <ellipse cx="200" cy="200" rx="170" ry="60" fill="none" stroke="url(#ringGrad)" stroke-width="1.3" opacity="0.55"/>
+      </g>
+      <g style="transform-origin:200px 200px; animation: spin 26s linear infinite reverse;">
+        <ellipse cx="200" cy="200" rx="140" ry="140" fill="none" stroke="url(#ringGrad)" stroke-width="1" opacity="0.35" stroke-dasharray="4 10"/>
+      </g>
+      <circle cx="200" cy="200" r="86" fill="url(#ringGrad)" opacity="0.9" style="filter:blur(0.5px);">
+        <animate attributeName="r" values="82;92;82" dur="3.6s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="200" cy="200" r="50" fill="#0b0f1e" opacity="0.5"/>
+      <g style="animation: spin 12s linear infinite;">
+        <circle cx="200" cy="60" r="5" fill="#F8FAFC"/>
+        <circle cx="340" cy="200" r="4" fill="#22D3EE"/>
+        <circle cx="200" cy="340" r="3.5" fill="#A78BFA"/>
+      </g>
+    </svg>
+  </div>`;
+}
+
+function viewLanding(){
+  return `
+  ${navPublic()}
+  <main>
+    <!-- HERO -->
+    <section style="padding:96px 0 60px;">
+      <div class="container" style="display:grid; grid-template-columns:1.1fr 0.9fr; gap:40px; align-items:center;">
+        <div class="fade-up">
+          <span class="badge"><span class="dot"></span> Now with multi-model intelligence</span>
+          <h1 class="font-head" style="font-size:56px; line-height:1.05; margin:22px 0 20px; font-weight:700;">Your AI Workspace,<br><span class="gradient-text">Reimagined.</span></h1>
+          <p style="color:var(--muted); font-size:18px; line-height:1.6; max-width:520px;">One intelligent workspace for writing, coding, analyzing, creating, and getting more done with AI.</p>
+          <div style="display:flex; gap:14px; margin-top:32px; flex-wrap:wrap;">
+            <button class="btn btn-primary" onclick="setView('signup')">Start Creating →</button>
+            <button class="btn btn-ghost" onclick="setView('signup')">Explore AI Tools</button>
+          </div>
+          <div style="display:flex; gap:28px; margin-top:44px; flex-wrap:wrap;">
+            <div><div class="font-head" style="font-size:26px; font-weight:700;">120K+</div><div style="color:var(--muted); font-size:13px;">Active workspaces</div></div>
+            <div><div class="font-head" style="font-size:26px; font-weight:700;">40M+</div><div style="color:var(--muted); font-size:13px;">Tasks completed</div></div>
+            <div><div class="font-head" style="font-size:26px; font-weight:700;">99.9%</div><div style="color:var(--muted); font-size:13px;">Uptime SLA</div></div>
+          </div>
+        </div>
+        <div class="fade-up" style="animation-delay:.1s; animation:floaty 6s ease-in-out infinite;">${heroOrb()}</div>
+      </div>
+    </section>
+
+    <!-- LOGOS -->
+    <section style="padding:20px 0 60px; opacity:.6;">
+      <div class="container" style="display:flex; gap:40px; flex-wrap:wrap; justify-content:center; font-size:13px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted);">
+        <span>Trusted by teams at</span><span>Vantix</span><span>Lumen Labs</span><span>Orbital</span><span>Fintra</span><span>Wavepoint</span>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features" style="padding:60px 0;">
+      <div class="container">
+        <div style="text-align:center; max-width:600px; margin:0 auto 48px;">
+          <span class="badge">Capabilities</span>
+          <h2 class="font-head" style="font-size:36px; margin-top:16px; font-weight:700;">Everything your work needs, in one place</h2>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px;" class="grid-3">
+          ${featureCard('💬','AI Chat Assistant','Natural, context-aware conversations that remember your workflow.')}
+          ${featureCard('✍️','AI Writing','Draft, edit, and polish any piece of content in seconds.')}
+          ${featureCard('⌨️','AI Coding','Generate, debug, and refactor code across any language.')}
+          ${featureCard('🎨','AI Image Generation','Turn ideas into visuals with a single prompt.')}
+          ${featureCard('📄','Document Analysis','Extract insights from PDFs, docs, and reports instantly.')}
+          ${featureCard('📊','Data Analysis','Understand spreadsheets and datasets without the spreadsheet.')}
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section style="padding:60px 0;">
+      <div class="container">
+        <div style="text-align:center; max-width:600px; margin:0 auto 48px;">
+          <span class="badge">Workflow</span>
+          <h2 class="font-head" style="font-size:36px; margin-top:16px; font-weight:700;">From prompt to result, in three steps</h2>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px;" class="grid-3">
+          ${stepCard('01','Choose an AI tool','Pick from writing, coding, analysis, and more — built for the task at hand.')}
+          ${stepCard('02','Add your prompt or file','Describe what you need, or upload a document to work from.')}
+          ${stepCard('03','Get intelligent results','Review, refine, and export — all inside your workspace.')}
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING -->
+    <section id="pricing" style="padding:60px 0;">
+      <div class="container">
+        <div style="text-align:center; max-width:600px; margin:0 auto 48px;">
+          <span class="badge">Pricing</span>
+          <h2 class="font-head" style="font-size:36px; margin-top:16px; font-weight:700;">Plans that scale with you</h2>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px;" class="grid-3">
+          ${pricingCard('Free','$0','/month', ['50 AI requests / month','Core AI tools','1 GB file storage','Community support'], false)}
+          ${pricingCard('Pro','$24','/month', ['Unlimited AI requests','All AI tools + priority models','50 GB file storage','Priority support','Advanced analytics'], true)}
+          ${pricingCard('Business','$59','/user/month', ['Everything in Pro','Team workspaces','Admin & usage controls','SSO & audit logs','Dedicated onboarding'], false)}
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section style="padding:60px 0;">
+      <div class="container">
+        <div style="text-align:center; max-width:600px; margin:0 auto 48px;">
+          <span class="badge">Loved by builders</span>
+          <h2 class="font-head" style="font-size:36px; margin-top:16px; font-weight:700;">What people are creating</h2>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px;" class="grid-3">
+          ${testimonialCard('Nexora cut our content pipeline from days to hours. The tool hub alone replaced four separate subscriptions.','Maren Osei','Head of Content, Lumen Labs')}
+          ${testimonialCard('The coding assistant understands context better than anything else we tried. It feels like pairing with a senior engineer.','Diego Farrell','Lead Engineer, Vantix')}
+          ${testimonialCard('Document analysis turned a week of manual review into a single afternoon. Genuinely changed how our team works.','Priya Chandran','Ops Manager, Fintra')}
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" style="padding:60px 0 100px;">
+      <div class="container" style="max-width:760px;">
+        <div style="text-align:center; margin-bottom:40px;">
+          <span class="badge">FAQ</span>
+          <h2 class="font-head" style="font-size:36px; margin-top:16px; font-weight:700;">Questions, answered</h2>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          ${faqItem('Do I need a credit card to start?','No — the Free plan gives you full access to core tools with no card required.')}
+          ${faqItem('Can I switch plans later?','Yes, you can upgrade, downgrade, or cancel anytime from Billing in your dashboard.')}
+          ${faqItem('Is my data kept private?','Every workspace is isolated. Your conversations, files, and prompts are only ever visible to you.')}
+          ${faqItem('Which AI models power Nexora?','Nexora routes requests across multiple frontier models, automatically selecting the best one for each task.')}
+        </div>
+      </div>
+    </section>
+  </main>
+  ${footerPublic()}
+  `;
+}
+
+function featureCard(icon,title,desc){
+  return `<div class="glass glass-hover" style="padding:26px;">
+    <div style="width:46px;height:46px;border-radius:12px; background:linear-gradient(135deg, rgba(124,58,237,0.25), rgba(34,211,238,0.18)); display:flex; align-items:center; justify-content:center; font-size:21px; margin-bottom:16px;">${icon}</div>
+    <h3 class="font-head" style="font-size:18px; margin-bottom:8px;">${title}</h3>
+    <p style="color:var(--muted); font-size:14px; line-height:1.6;">${desc}</p>
+  </div>`;
+}
+function stepCard(num,title,desc){
+  return `<div class="glass" style="padding:28px;">
+    <div class="font-head gradient-text" style="font-size:34px; font-weight:700; margin-bottom:14px;">${num}</div>
+    <h3 class="font-head" style="font-size:17px; margin-bottom:8px;">${title}</h3>
+    <p style="color:var(--muted); font-size:14px; line-height:1.6;">${desc}</p>
+  </div>`;
+}
+function pricingCard(name,price,period,feats,featured){
+  return `<div class="glass ${featured?'':'glass-hover'}" style="padding:30px; position:relative; ${featured? 'border-color:var(--primary); box-shadow:var(--glow);':''}">
+    ${featured?'<span class="badge" style="position:absolute; top:-14px; left:24px; background:linear-gradient(135deg,var(--primary),var(--secondary)); color:#fff; border:none;">Most popular</span>':''}
+    <h3 class="font-head" style="font-size:20px; margin-bottom:6px;">${name}</h3>
+    <div style="display:flex; align-items:baseline; gap:4px; margin:14px 0 20px;">
+      <span class="font-head" style="font-size:38px; font-weight:700;">${price}</span>
+      <span style="color:var(--muted); font-size:13.5px;">${period}</span>
+    </div>
+    <ul style="list-style:none; display:flex; flex-direction:column; gap:11px; margin-bottom:26px;">
+      ${feats.map(f=>`<li style="display:flex; gap:9px; font-size:14px; color:var(--muted);"><span style="color:var(--secondary);">✓</span>${f}</li>`).join('')}
+    </ul>
+    <button class="btn ${featured?'btn-primary':'btn-ghost'}" style="width:100%;" onclick="setView('signup')">Get Started</button>
+  </div>`;
+}
+function testimonialCard(quote,name,role){
+  return `<div class="glass" style="padding:26px;">
+    <p style="font-size:14.5px; line-height:1.7; color:var(--text); margin-bottom:20px;">"${quote}"</p>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div style="width:36px;height:36px;border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--secondary)); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px;">${name.split(' ').map(n=>n[0]).join('')}</div>
+      <div><div style="font-size:13.5px; font-weight:600;">${name}</div><div style="font-size:12px; color:var(--muted);">${role}</div></div>
+    </div>
+  </div>`;
+}
+function faqItem(q,a){
+  const id = 'faq-'+uid();
+  return `<div class="glass" style="padding:20px 22px; cursor:pointer;" onclick="const b=document.getElementById('${id}'); b.classList.toggle('hidden');">
+    <div style="display:flex; justify-content:space-between; align-items:center; font-weight:600; font-size:15px;">${q}<span style="color:var(--muted);">＋</span></div>
+    <p id="${id}" class="hidden" style="color:var(--muted); font-size:14px; margin-top:12px; line-height:1.6;">${a}</p>
+  </div>`;
+}
+function footerPublic(){
+  return `<footer style="border-top:1px solid var(--border); padding:50px 0 30px; margin-top:20px;">
+    <div class="container" style="display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:32px;" class="grid-4">
+      <div>
+        ${logoMark()}
+        <p style="color:var(--muted); font-size:13.5px; margin-top:14px; max-width:260px; line-height:1.6;">The all-in-one AI workspace for writing, coding, analyzing, and creating.</p>
+        <div style="display:flex; gap:10px; margin-top:18px;">
+          <a href="#" class="btn-icon">𝕏</a><a href="#" class="btn-icon">in</a><a href="#" class="btn-icon">gh</a>
+        </div>
+      </div>
+      <div><div style="font-weight:700; font-size:13.5px; margin-bottom:14px;">Product</div>
+        <div style="display:flex; flex-direction:column; gap:10px; color:var(--muted); font-size:13.5px;"><a href="#features">Features</a><a href="#tools">AI Tools</a><a href="#pricing">Pricing</a></div>
+      </div>
+      <div><div style="font-weight:700; font-size:13.5px; margin-bottom:14px;">Company</div>
+        <div style="display:flex; flex-direction:column; gap:10px; color:var(--muted); font-size:13.5px;"><a href="#">About</a><a href="#">Careers</a><a href="#">Blog</a></div>
+      </div>
+      <div><div style="font-weight:700; font-size:13.5px; margin-bottom:14px;">Legal</div>
+        <div style="display:flex; flex-direction:column; gap:10px; color:var(--muted); font-size:13.5px;"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
+      </div>
+    </div>
+    <div class="container" style="margin-top:36px; padding-top:20px; border-top:1px solid var(--border); color:var(--muted); font-size:12.5px;">© 2026 Nexora AI. All rights reserved.</div>
+  </footer>`;
+}
+
+/* ============ Auth Views ============ */
+function authShell(title, subtitle, formHtml, footerHtml){
+  return `
+  <div style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px 20px; position:relative;">
+    <div style="position:absolute; top:28px; left:32px;">${logoMark()}</div>
+    <div class="glass fade-up" style="width:100%; max-width:420px; padding:36px;">
+      <h1 class="font-head" style="font-size:26px; font-weight:700; margin-bottom:6px;">${title}</h1>
+      <p style="color:var(--muted); font-size:14px; margin-bottom:28px;">${subtitle}</p>
+      ${formHtml}
+      ${footerHtml}
+    </div>
+  </div>`;
+}
+
+function viewLogin(){
+  return authShell('Welcome back', 'Log in to continue to your workspace.', `
+    <form onsubmit="return handleLogin(event)" style="display:flex; flex-direction:column; gap:16px;">
+      <div class="field"><label>Email</label><input class="input" type="email" id="login-email" placeholder="you@company.com" required></div>
+      <div class="field"><label>Password</label><input class="input" type="password" id="login-password" placeholder="••••••••" required></div>
+      <div style="display:flex; justify-content:flex-end;"><a onclick="setView('forgot')" style="font-size:13px; color:var(--accent); cursor:pointer;">Forgot password?</a></div>
+      <button class="btn btn-primary" style="width:100%;" type="submit">Log In</button>
+    </form>
+    <p style="text-align:center; font-size:13.5px; color:var(--muted); margin-top:22px;">Don't have an account? <a onclick="setView('signup')" style="color:var(--accent); cursor:pointer;">Sign up</a></p>
+  `, '');
+}
+
+function viewSignup(){
+  return authShell('Create your account', 'Start your free Nexora AI workspace in seconds.', `
+    <form onsubmit="return handleSignup(event)" style="display:flex; flex-direction:column; gap:16px;">
+      <div class="field"><label>Full name</label><input class="input" type="text" id="signup-name" placeholder="Alex Rivera" required></div>
+      <div class="field"><label>Email</label><input class="input" type="email" id="signup-email" placeholder="you@company.com" required></div>
+      <div class="field"><label>Password</label><input class="input" type="password" id="signup-password" placeholder="Min. 8 characters" minlength="8" required></div>
+      <button class="btn btn-primary" style="width:100%;" type="submit">Create Account</button>
+    </form>
+    <p style="text-align:center; font-size:13.5px; color:var(--muted); margin-top:22px;">Already have an account? <a onclick="setView('login')" style="color:var(--accent); cursor:pointer;">Log in</a></p>
+  `, '');
+}
+
+function viewForgot(){
+  return authShell('Reset your password', "Enter your email and we'll send you a reset link.", `
+    <form onsubmit="return handleForgot(event)" style="display:flex; flex-direction:column; gap:16px;">
+      <div class="field"><label>Email</label><input class="input" type="email" id="forgot-email" placeholder="you@company.com" required></div>
+      <button class="btn btn-primary" style="width:100%;" type="submit">Send Reset Link</button>
+    </form>
+    <p style="text-align:center; font-size:13.5px; color:var(--muted); margin-top:22px;"><a onclick="setView('login')" style="color:var(--accent); cursor:pointer;">← Back to login</a></p>
+  `, '');
+}
+
+async function handleSignup(e){
+  e.preventDefault();
+  const name = document.getElementById('signup-name').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+  const password = document.getElementById('signup-password').value;
+  const user = { id: uid(), name, email, password, avatar: name.split(' ').map(n=>n[0]).slice(0,2).join('').toUpperCase(), createdAt: nowISO() };
+  DATA = defaultData(user);
+  seedUsageIfEmpty(DATA);
+  await dbSave(DATA);
+  toast(`Welcome to Nexora, ${name.split(' ')[0]}!`, 'success');
+  VIEW = 'app'; APP_TAB = 'home';
+  render();
+  return false;
+}
+
+async function handleLogin(e){
+  e.preventDefault();
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const saved = await dbLoad();
+  if(saved && saved.user && saved.user.email.toLowerCase() === email.toLowerCase() && saved.user.password === password){
+    DATA = saved; seedUsageIfEmpty(DATA);
+    VIEW = 'app'; APP_TAB = 'home';
+    toast(`Welcome back, ${DATA.user.name.split(' ')[0]}!`, 'success');
+    render();
+  } else if(saved && saved.user && saved.user.email.toLowerCase() === email.toLowerCase()){
+    toast('Incorrect password.', 'error');
+  } else {
+    toast('No account found for that email. Try signing up.', 'error');
+  }
+  return false;
+}
+
+async function handleForgot(e){
+  e.preventDefault();
+  const email = document.getElementById('forgot-email').value.trim();
+  toast(`If an account exists for ${email}, a reset link has been sent.`, 'success');
+  setView('login');
+  return false;
+}
+
+function logout(){
+  VIEW = 'landing'; APP_TAB = 'home'; DATA = null;
+  toast('Logged out successfully.', 'info');
+  render();
+}
+/* ============ App Shell (Sidebar + Topbar) ============ */
+const SIDEBAR_ITEMS = [
+  { id:'home', label:'Dashboard', icon:'▦' },
+  { id:'chat', label:'AI Chat', icon:'💬' },
+  { id:'tools', label:'AI Tools', icon:'⚙' },
+  { id:'files', label:'Files', icon:'📁' },
+  { id:'history', label:'History', icon:'🕘' },
+  { id:'prompts', label:'Saved Prompts', icon:'★' },
+  { id:'analytics', label:'Analytics', icon:'📈' },
+  { id:'billing', label:'Billing', icon:'💳' },
+  { id:'settings', label:'Settings', icon:'⚒' },
+];
+
+function viewAppShell(){
+  const collapsed = UI.sidebarCollapsed;
+  return `
+  <div style="display:flex; min-height:100vh;">
+    <!-- Sidebar (desktop) -->
+    <aside class="sidebar-desktop" style="width:${collapsed?'80px':'250px'}; flex-shrink:0; border-right:1px solid var(--border); padding:20px 14px; display:flex; flex-direction:column; gap:6px; transition: width .2s ease; position:sticky; top:0; height:100vh;">
+      <div style="display:flex; align-items:center; justify-content:${collapsed?'center':'space-between'}; padding:6px 6px 18px;">
+        ${collapsed ? `<div onclick="setView('landing')" style="width:34px;height:34px;border-radius:10px; background:linear-gradient(135deg, var(--primary), var(--secondary)); cursor:pointer;"></div>` : logoMark()}
+        ${collapsed?'':`<button class="btn-icon" onclick="UI.sidebarCollapsed=true;render();" title="Collapse">«</button>`}
+      </div>
+      ${collapsed?`<button class="btn-icon" style="margin:0 auto 10px;" onclick="UI.sidebarCollapsed=false;render();" title="Expand">»</button>`:''}
+      <nav style="display:flex; flex-direction:column; gap:3px;">
+        ${SIDEBAR_ITEMS.map(item => sidebarItem(item, collapsed)).join('')}
+      </nav>
+      <div style="margin-top:auto; padding-top:14px; border-top:1px solid var(--border);">
+        <div class="glass" style="padding:${collapsed?'10px':'14px'}; display:flex; flex-direction:column; align-items:${collapsed?'center':'flex-start'}; gap:8px;">
+          ${collapsed?'':`<span class="badge" style="border-color:rgba(124,58,237,0.4);"><span class="dot"></span>${DATA.plan} Plan</span>`}
+          ${collapsed?'':`<button class="btn btn-primary btn-sm" style="width:100%;" onclick="setTab('billing')">Upgrade</button>`}
+        </div>
+      </div>
+    </aside>
+
+    <!-- Mobile nav overlay -->
+    ${UI.mobileNav ? mobileNavOverlay() : ''}
+
+    <!-- Main -->
+    <div style="flex:1; min-width:0; display:flex; flex-direction:column;">
+      ${topbar()}
+      <main style="padding:26px 30px 60px; flex:1;">
+        ${renderTab()}
+      </main>
+    </div>
+  </div>
+  <style>
+    @media (max-width: 900px){
+      .sidebar-desktop{ display:none !important; }
+    }
+  </style>
+  `;
+}
+
+function sidebarItem(item, collapsed){
+  const active = APP_TAB === item.id;
+  return `<div onclick="setTab('${item.id}')" style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:11px; cursor:pointer; font-size:14px; font-weight:600;
+    color:${active?'#fff':'var(--muted)'}; background:${active?'linear-gradient(135deg, rgba(124,58,237,0.35), rgba(34,211,238,0.18))':'transparent'}; border:1px solid ${active?'rgba(167,139,250,0.4)':'transparent'}; justify-content:${collapsed?'center':'flex-start'};"
+    title="${item.label}">
+    <span style="font-size:16px;">${item.icon}</span>${collapsed?'':`<span>${item.label}</span>`}
+  </div>`;
+}
+
+function mobileNavOverlay(){
+  return `<div class="modal-overlay" style="align-items:flex-start; justify-content:flex-start;" onclick="if(event.target===this){UI.mobileNav=false;render();}">
+    <div class="glass" style="width:250px; height:100vh; padding:20px 14px; border-radius:0;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">${logoMark()}<button class="btn-icon" onclick="UI.mobileNav=false;render();">✕</button></div>
+      <nav style="display:flex; flex-direction:column; gap:3px;">${SIDEBAR_ITEMS.map(item => sidebarItem(item,false)).join('')}</nav>
+    </div>
+  </div>`;
+}
+
+function topbar(){
+  const u = DATA.user;
+  return `
+  <header style="height:70px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 26px; position:sticky; top:0; background:rgba(8,11,24,0.75); backdrop-filter:blur(14px); z-index:50;">
+    <div style="display:flex; align-items:center; gap:14px; flex:1;">
+      <button class="btn-icon mobile-only" onclick="UI.mobileNav=true;render();" style="display:none;">☰</button>
+      <div style="position:relative; max-width:360px; width:100%;" class="topbar-search">
+        <input class="input" placeholder="Search anything..." style="padding-left:38px;" oninput="globalSearch(this.value)">
+        <span style="position:absolute; left:13px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:14px;">⌕</span>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:14px;">
+      <button class="btn-icon" title="Notifications" onclick="toast('You are all caught up.','info')">🔔</button>
+      <button class="btn-icon" title="Toggle theme" onclick="toast('Light theme coming soon — Nexora is dark-first by design.','info')">☾</button>
+      <div style="position:relative;">
+        <div onclick="toggleProfileMenu()" style="display:flex; align-items:center; gap:8px; cursor:pointer; padding:4px 8px 4px 4px; border-radius:99px; border:1px solid var(--border);">
+          <div style="width:30px;height:30px;border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--secondary)); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">${u.avatar}</div>
+          <span style="font-size:13.5px; font-weight:600;" class="hide-mobile">${u.name.split(' ')[0]}</span>
+        </div>
+        <div id="profile-menu" class="glass hidden" style="position:absolute; right:0; top:44px; width:200px; padding:8px; z-index:60;">
+          <div onclick="setTab('settings')" style="padding:9px 12px; border-radius:8px; cursor:pointer; font-size:13.5px;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">Profile</div>
+          <div onclick="setTab('billing')" style="padding:9px 12px; border-radius:8px; cursor:pointer; font-size:13.5px;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">Billing</div>
+          <div style="height:1px; background:var(--border); margin:6px 0;"></div>
+          <div onclick="logout()" style="padding:9px 12px; border-radius:8px; cursor:pointer; font-size:13.5px; color:#ff8fa3;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">Log out</div>
+        </div>
+      </div>
+    </div>
+  </header>`;
+}
+
+function toggleProfileMenu(){
+  const el = document.getElementById('profile-menu');
+  el.classList.toggle('hidden');
+}
+function globalSearch(q){ /* lightweight: jumps to history search if typing */ }
+
+function renderTab(){
+  switch(APP_TAB){
+    case 'home': return viewDashboardHome();
+    case 'chat': return viewChat();
+    case 'tools': return viewTools();
+    case 'files': return viewFiles();
+    case 'history': return viewHistory();
+    case 'prompts': return viewPrompts();
+    case 'analytics': return viewAnalytics();
+    case 'billing': return viewBilling();
+    case 'settings': return viewSettings();
+    default: return viewDashboardHome();
+  }
+}
+
+/* ============ Dashboard Home ============ */
+function viewDashboardHome(){
+  const totalReqs = DATA.usage.length;
+  const totalTokens = DATA.usage.reduce((s,u)=>s+u.tokens,0);
+  const savedPrompts = DATA.prompts.length;
+  const filesAnalyzed = DATA.files.filter(f=>f.analyzed).length;
+  const recent = [...DATA.conversations].sort((a,b)=> new Date(b.updatedAt)-new Date(a.updatedAt)).slice(0,4);
+  const toolCounts = {};
+  DATA.usage.forEach(u=> toolCounts[u.tool] = (toolCounts[u.tool]||0)+1);
+  const favTools = Object.entries(toolCounts).sort((a,b)=>b[1]-a[1]).slice(0,4);
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+
+  return `
+  <div class="fade-up">
+    <h1 class="font-head" style="font-size:28px; font-weight:700; margin-bottom:4px;">${greeting}, ${DATA.user.name.split(' ')[0]}. Ready to create something amazing?</h1>
+    <p style="color:var(--muted); font-size:14.5px; margin-bottom:28px;">Here's what's happening in your workspace.</p>
+
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:28px;" class="grid-4">
+      ${statCard('Total AI Requests', fmtNum(totalReqs), '💬', '+12% this week')}
+      ${statCard('Tokens Used', fmtNum(totalTokens), '⚡', 'Across all tools')}
+      ${statCard('Saved Prompts', fmtNum(savedPrompts), '★', 'Ready to reuse')}
+      ${statCard('Files Analyzed', fmtNum(filesAnalyzed), '📁', `${DATA.files.length} total files`)}
+    </div>
+
+    <div style="display:grid; grid-template-columns:1.4fr 1fr; gap:20px; margin-bottom:20px;" class="grid-2">
+      <div class="glass" style="padding:24px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+          <h3 class="font-head" style="font-size:16px;">AI usage — last 14 days</h3>
+        </div>
+        ${usageChart()}
+      </div>
+      <div class="glass" style="padding:24px;">
+        <h3 class="font-head" style="font-size:16px; margin-bottom:16px;">Favorite AI tools</h3>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          ${favTools.length ? favTools.map(([name,count])=>`
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <span style="font-size:13.5px;">${name}</span>
+              <span class="badge">${count} uses</span>
+            </div>`).join('') : emptyRow('No usage yet — try an AI tool.')}
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1.4fr 1fr; gap:20px;" class="grid-2">
+      <div class="glass" style="padding:24px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <h3 class="font-head" style="font-size:16px;">Recent conversations</h3>
+          <a onclick="setTab('history')" style="font-size:13px; color:var(--accent); cursor:pointer;">View all</a>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:4px;">
+          ${recent.length ? recent.map(c => `
+            <div onclick="openConversation('${c.id}')" style="display:flex; justify-content:space-between; align-items:center; padding:12px 10px; border-radius:10px; cursor:pointer;" onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background='transparent'">
+              <div><div style="font-size:14px; font-weight:600;">${escapeHtml(c.title)}</div><div style="font-size:12px; color:var(--muted);">${c.messages.length} messages</div></div>
+              <span style="font-size:12px; color:var(--muted);">${fmtRelative(c.updatedAt)}</span>
+            </div>`).join('') : emptyRow('No conversations yet. Start one in AI Chat.')}
+        </div>
+      </div>
+      <div class="glass" style="padding:24px;">
+        <h3 class="font-head" style="font-size:16px; margin-bottom:16px;">Quick actions</h3>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          ${quickAction('💬','New chat', "setTab('chat')")}
+          ${quickAction('✍️','Write with AI', "openToolFromQuick('AI Writer')")}
+          ${quickAction('📁','Upload a file', "setTab('files')")}
+          ${quickAction('⌨️','Generate code', "openToolFromQuick('Code Generator')")}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function quickAction(icon,label,onclick){
+  return `<button class="btn btn-ghost" style="justify-content:flex-start;" onclick="${onclick}"><span>${icon}</span>${label}</button>`;
+}
+function openToolFromQuick(name){ setTab('tools'); setTimeout(()=>launchTool(name), 50); }
+
+function statCard(label,value,icon,sub){
+  return `<div class="glass glass-hover" style="padding:20px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div>
+        <div style="color:var(--muted); font-size:13px; margin-bottom:8px;">${label}</div>
+        <div class="font-head" style="font-size:26px; font-weight:700;">${value}</div>
+      </div>
+      <div style="width:36px;height:36px;border-radius:10px; background:rgba(124,58,237,0.15); display:flex; align-items:center; justify-content:center; font-size:16px;">${icon}</div>
+    </div>
+    <div style="color:var(--secondary); font-size:12px; margin-top:10px;">${sub}</div>
+  </div>`;
+}
+function emptyRow(text){
+  return `<div style="padding:24px 10px; text-align:center; color:var(--muted); font-size:13.5px;">${text}</div>`;
+}
+
+function usageChart(){
+  const days = [];
+  for(let i=13;i>=0;i--){
+    const d = new Date(Date.now() - i*86400000);
+    const key = d.toDateString();
+    const count = DATA.usage.filter(u => new Date(u.createdAt).toDateString() === key).length;
+    days.push({ label: d.toLocaleDateString(undefined,{weekday:'short'}), count });
+  }
+  const max = Math.max(1, ...days.map(d=>d.count));
+  return `<div style="display:flex; align-items:flex-end; gap:8px; height:150px;">
+    ${days.map(d => `
+      <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; height:100%; justify-content:flex-end;">
+        <div style="width:100%; max-width:22px; height:${Math.max(4,(d.count/max)*110)}px; border-radius:6px 6px 3px 3px; background:linear-gradient(180deg, var(--secondary), var(--primary)); opacity:${d.count?1:0.25};"></div>
+        <span style="font-size:10px; color:var(--muted);">${d.label[0]}</span>
+      </div>`).join('')}
+  </div>`;
+}
+/* ============ AI Chat ============ */
+const MODEL_OPTIONS = [
+  { id:'nexora-pro', label:'Nexora Pro (balanced)' },
+  { id:'nexora-fast', label:'Nexora Fast (quick answers)' },
+  { id:'nexora-deep', label:'Nexora Deep (extended reasoning)' },
+];
+let CHAT_ABORT = null;
+let CHAT_STREAMING = false;
+let CHAT_DRAFT = '';
+let EDITING_MSG_ID = null;
+
+function activeConversation(){
+  return DATA.conversations.find(c => c.id === STATE_CHAT_ID) || null;
+}
+let STATE_CHAT_ID = null;
+
+function ensureActiveConversation(){
+  if(STATE_CHAT_ID && activeConversation()) return;
+  if(DATA.conversations.length){
+    STATE_CHAT_ID = [...DATA.conversations].sort((a,b)=> new Date(b.updatedAt)-new Date(a.updatedAt))[0].id;
+  } else {
+    newConversation(false);
+  }
+}
+
+function newConversation(doRender=true){
+  const convo = { id: uid(), title:'New conversation', createdAt: nowISO(), updatedAt: nowISO(), messages:[], favorite:false, model:'nexora-pro' };
+  DATA.conversations.unshift(convo);
+  STATE_CHAT_ID = convo.id;
+  dbSave(DATA);
+  if(doRender){ setTab('chat'); }
+}
+
+function openConversation(id){
+  STATE_CHAT_ID = id;
+  setTab('chat');
+}
+
+const PROMPT_SUGGESTIONS = [
+  'Draft a professional email announcing a product update',
+  'Explain quantum computing like I\'m new to the topic',
+  'Write a Python function to deduplicate a list',
+  'Summarize the pros and cons of remote work',
+];
+
+function viewChat(){
+  ensureActiveConversation();
+  const convo = activeConversation();
+  const conversations = [...DATA.conversations].sort((a,b)=> new Date(b.updatedAt)-new Date(a.updatedAt));
+
+  return `
+  <div style="display:grid; grid-template-columns:260px 1fr; gap:20px; height:calc(100vh - 130px);" class="chat-grid">
+    <!-- Conversation list -->
+    <div class="glass" style="padding:16px; display:flex; flex-direction:column; overflow:hidden;">
+      <button class="btn btn-primary btn-sm" style="width:100%; margin-bottom:14px;" onclick="newConversation()">+ New conversation</button>
+      <div style="overflow-y:auto; display:flex; flex-direction:column; gap:4px; flex:1;">
+        ${conversations.length ? conversations.map(c => `
+          <div onclick="openConversation('${c.id}')" style="padding:10px 12px; border-radius:10px; cursor:pointer; background:${c.id===convo.id?'rgba(124,58,237,0.18)':'transparent'}; border:1px solid ${c.id===convo.id?'rgba(167,139,250,0.4)':'transparent'};">
+            <div style="font-size:13.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${c.favorite?'★ ':''}${escapeHtml(c.title)}</div>
+            <div style="font-size:11.5px; color:var(--muted);">${fmtRelative(c.updatedAt)}</div>
+          </div>`).join('') : `<div style="color:var(--muted); font-size:13px; text-align:center; padding:20px 8px;">No conversations yet.</div>`}
+      </div>
+    </div>
+
+    <!-- Chat panel -->
+    <div class="glass" style="display:flex; flex-direction:column; overflow:hidden;">
+      <div style="padding:14px 20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; gap:12px;">
+        <input class="input" style="border:none; background:transparent; font-weight:700; font-size:15px; padding:4px 0; max-width:260px;" value="${escapeHtml(convo.title)}" onchange="renameConversation('${convo.id}', this.value)">
+        <div style="display:flex; gap:8px; align-items:center;">
+          <select class="input" style="width:auto; padding:8px 10px; font-size:13px;" onchange="setConvoModel('${convo.id}', this.value)">
+            ${MODEL_OPTIONS.map(m=>`<option value="${m.id}" ${convo.model===m.id?'selected':''}>${m.label}</option>`).join('')}
+          </select>
+          <button class="btn-icon" title="Favorite" onclick="toggleFavConvo('${convo.id}')">${convo.favorite?'★':'☆'}</button>
+          <button class="btn-icon" title="Delete" onclick="deleteConversation('${convo.id}')">🗑</button>
+        </div>
+      </div>
+
+      <div id="chat-scroll" style="flex:1; overflow-y:auto; padding:22px; display:flex; flex-direction:column; gap:18px;">
+        ${convo.messages.length ? convo.messages.map((m,idx) => chatBubble(m, idx, convo)).join('') : chatEmptyState()}
+        ${CHAT_STREAMING ? typingIndicator() : ''}
+      </div>
+
+      <div style="padding:16px 20px; border-top:1px solid var(--border);">
+        <div style="display:flex; gap:8px; align-items:flex-end;">
+          <button class="btn-icon" title="Attach file" onclick="toast('Attach a file from the Files tab, or drag one in here (demo).','info')">📎</button>
+          <button class="btn-icon" title="Attach image" onclick="toast('Image attachments are supported in Nexora Pro workspaces.','info')">🖼</button>
+          <button class="btn-icon" title="Voice input" onclick="toast('Voice input is listening... (demo)','info')">🎙</button>
+          <textarea id="chat-input" class="input" rows="1" placeholder="Message Nexora AI..." style="resize:none; max-height:140px;" onkeydown="handleChatKeydown(event)" oninput="autoGrow(this)">${escapeHtml(CHAT_DRAFT)}</textarea>
+          ${CHAT_STREAMING
+            ? `<button class="btn btn-ghost btn-sm" onclick="stopGenerating()">■ Stop</button>`
+            : `<button class="btn btn-primary" onclick="sendChatMessage()">Send</button>`}
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>@media (max-width:900px){ .chat-grid{ grid-template-columns:1fr !important; height:auto !important; } }</style>
+  `;
+}
+
+function chatEmptyState(){
+  return `<div style="margin:auto; text-align:center; max-width:440px;">
+    <div style="width:56px;height:56px; border-radius:16px; background:linear-gradient(135deg, var(--primary), var(--secondary)); margin:0 auto 18px; display:flex; align-items:center; justify-content:center; font-size:24px; box-shadow:var(--glow);">✦</div>
+    <h3 class="font-head" style="font-size:19px; margin-bottom:8px;">Start the conversation</h3>
+    <p style="color:var(--muted); font-size:13.5px; margin-bottom:20px;">Ask anything, or try one of these:</p>
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      ${PROMPT_SUGGESTIONS.map(p => `<button class="btn btn-ghost btn-sm" style="justify-content:flex-start; text-align:left;" onclick="quickSend('${p.replace(/'/g,"\\'")}')">${p}</button>`).join('')}
+    </div>
+  </div>`;
+}
+
+function chatBubble(m, idx, convo){
+  const isUser = m.role === 'user';
+  return `<div style="display:flex; ${isUser?'justify-content:flex-end':'justify-content:flex-start'};">
+    <div style="max-width:72%; display:flex; flex-direction:column; gap:6px; align-items:${isUser?'flex-end':'flex-start'};">
+      <div class="${isUser?'':'glass'}" style="padding:13px 16px; border-radius:16px; ${isUser? 'background:linear-gradient(135deg, var(--primary), #5b21b6); color:#fff;' : ''} font-size:14.5px; line-height:1.65;">
+        ${renderMarkdownish(m.content)}
+      </div>
+      <div style="display:flex; gap:10px; align-items:center; padding:0 4px;">
+        <span style="font-size:11px; color:var(--muted);">${fmtTime(m.createdAt)}</span>
+        ${!isUser ? `
+          <button class="btn-icon" style="padding:4px 7px; font-size:11px;" onclick="copyMessage('${convo.id}', ${idx})" title="Copy">⧉</button>
+          <button class="btn-icon" style="padding:4px 7px; font-size:11px;" onclick="regenerateMessage('${convo.id}', ${idx})" title="Regenerate">↻</button>
+        ` : `
+          <button class="btn-icon" style="padding:4px 7px; font-size:11px;" onclick="editMessage('${convo.id}', ${idx})" title="Edit">✎</button>
+        `}
+      </div>
+    </div>
+  </div>`;
+}
+
+function typingIndicator(){
+  return `<div style="display:flex; justify-content:flex-start;">
+    <div class="glass" style="padding:14px 18px; border-radius:16px; display:flex; gap:5px;">
+      <span class="dot" style="animation:pulseGlow 1s ease infinite;"></span>
+      <span class="dot" style="animation:pulseGlow 1s ease infinite .15s;"></span>
+      <span class="dot" style="animation:pulseGlow 1s ease infinite .3s;"></span>
+    </div>
+  </div>`;
+}
+
+// Minimal, safe markdown-ish rendering: code blocks, inline code, bold, line breaks.
+function renderMarkdownish(text){
+  let t = escapeHtml(text);
+  t = t.replace(/```(\w*)\n([\s\S]*?)```/g, (m, lang, code) => {
+    return `<div style="background:#0a0e1c; border:1px solid var(--border); border-radius:10px; margin:8px 0; overflow:hidden;">
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; border-bottom:1px solid var(--border); font-size:11px; color:var(--muted);">
+        <span>${lang || 'code'}</span>
+      </div>
+      <pre style="padding:12px; overflow-x:auto; font-size:13px; font-family:monospace; margin:0;"><code>${code}</code></pre>
+    </div>`;
+  });
+  t = t.replace(/`([^`]+)`/g, '<code style="background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:5px; font-size:13px;">$1</code>');
+  t = t.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  t = t.replace(/\n/g, '<br>');
+  return t;
+}
+
+function autoGrow(el){ el.style.height='auto'; el.style.height = Math.min(140, el.scrollHeight)+'px'; CHAT_DRAFT = el.value; }
+function handleChatKeydown(e){
+  if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendChatMessage(); }
+}
+function quickSend(text){ CHAT_DRAFT = text; sendChatMessage(); }
+
+function renameConversation(id, title){
+  const c = DATA.conversations.find(c=>c.id===id); if(!c) return;
+  c.title = title || 'Untitled'; c.updatedAt = nowISO(); dbSave(DATA);
+}
+function setConvoModel(id, model){
+  const c = DATA.conversations.find(c=>c.id===id); if(!c) return;
+  c.model = model; dbSave(DATA);
+}
+function toggleFavConvo(id){
+  const c = DATA.conversations.find(c=>c.id===id); if(!c) return;
+  c.favorite = !c.favorite; dbSave(DATA); render();
+}
+function deleteConversation(id){
+  DATA.conversations = DATA.conversations.filter(c=>c.id!==id);
+  if(STATE_CHAT_ID === id) STATE_CHAT_ID = null;
+  dbSave(DATA); toast('Conversation deleted.', 'success'); render();
+}
+function copyMessage(convoId, idx){
+  const c = DATA.conversations.find(c=>c.id===convoId); if(!c) return;
+  navigator.clipboard?.writeText(c.messages[idx].content);
+  toast('Copied to clipboard.', 'success');
+}
+function editMessage(convoId, idx){
+  const c = DATA.conversations.find(c=>c.id===convoId); if(!c) return;
+  CHAT_DRAFT = c.messages[idx].content;
+  c.messages = c.messages.slice(0, idx); // remove this message and everything after
+  dbSave(DATA); render();
+  setTimeout(()=>{ const el = document.getElementById('chat-input'); if(el){ el.focus(); autoGrow(el);} }, 30);
+}
+function regenerateMessage(convoId, idx){
+  const c = DATA.conversations.find(c=>c.id===convoId); if(!c) return;
+  c.messages = c.messages.slice(0, idx); // drop this AI message, resend from history
+  dbSave(DATA);
+  runAIResponse(c);
+}
+
+async function sendChatMessage(){
+  const el = document.getElementById('chat-input');
+  const text = (el ? el.value : CHAT_DRAFT).trim();
+  if(!text || CHAT_STREAMING) return;
+  const convo = activeConversation();
+  if(!convo) return;
+  convo.messages.push({ role:'user', content:text, createdAt: nowISO() });
+  if(convo.messages.length === 1) convo.title = text.slice(0,42) + (text.length>42?'…':'');
+  convo.updatedAt = nowISO();
+  CHAT_DRAFT = '';
+  dbSave(DATA);
+  render();
+  runAIResponse(convo);
+}
+
+async function runAIResponse(convo){
+  CHAT_STREAMING = true;
+  render();
+  CHAT_ABORT = new AbortController();
+  try{
+    const apiMessages = convo.messages.map(m => ({ role: m.role, content: m.content }));
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      signal: CHAT_ABORT.signal,
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        messages: apiMessages,
+      })
+    });
+    const data = await response.json();
+    const textBlocks = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n');
+    const reply = textBlocks || "I wasn't able to generate a response — please try again.";
+    convo.messages.push({ role:'assistant', content: reply, createdAt: nowISO() });
+    convo.updatedAt = nowISO();
+    DATA.usage.push({ tool:'AI Chat', tokens: Math.round(reply.length/4) + Math.round(JSON.stringify(apiMessages).length/4), createdAt: nowISO() });
+    dbSave(DATA);
+  }catch(err){
+    if(err.name !== 'AbortError'){
+      convo.messages.push({ role:'assistant', content:'Something went wrong reaching the AI model. Please try again.', createdAt: nowISO() });
+      toast('AI request failed.', 'error');
+    }
+  }finally{
+    CHAT_STREAMING = false;
+    CHAT_ABORT = null;
+    render();
+  }
+}
+
+function stopGenerating(){
+  if(CHAT_ABORT) CHAT_ABORT.abort();
+  CHAT_STREAMING = false;
+  render();
+}
+/* ============ AI Tools Hub ============ */
+const AI_TOOLS = [
+  { name:'AI Writer', icon:'✍️', category:'Writing', desc:'Draft articles, essays, and marketing copy from a short brief.' },
+  { name:'AI Summarizer', icon:'📝', category:'Writing', desc:'Condense long text into clear, digestible summaries.' },
+  { name:'AI Translator', icon:'🌐', category:'Writing', desc:'Translate text between languages while preserving tone.' },
+  { name:'Code Generator', icon:'⌨️', category:'Development', desc:'Generate working code from a plain-language description.' },
+  { name:'Code Debugger', icon:'🐞', category:'Development', desc:'Find and fix bugs in your code with an explanation.' },
+  { name:'AI Image Generator', icon:'🎨', category:'Creative', desc:'Describe an image and get creative visual concepts back.' },
+  { name:'Email Writer', icon:'✉️', category:'Productivity', desc:'Write polished, on-tone emails for any situation.' },
+  { name:'Social Media Caption Generator', icon:'📣', category:'Creative', desc:'Generate catchy captions for any platform or vibe.' },
+  { name:'Document Analyzer', icon:'📄', category:'Analysis', desc:'Extract key points, risks, and action items from documents.' },
+  { name:'Data Analyzer', icon:'📊', category:'Analysis', desc:'Turn raw data descriptions into clear insights and trends.' },
+  { name:'Study Assistant', icon:'🎓', category:'Productivity', desc:'Get explanations, flashcards, and practice questions.' },
+  { name:'Resume Builder', icon:'🧾', category:'Productivity', desc:'Craft resume bullet points that highlight impact.' },
+];
+const TOOL_CATEGORIES = ['All','Writing','Development','Creative','Analysis','Productivity'];
+let ACTIVE_TOOL = null;
+let TOOL_RESULT = '';
+let TOOL_LOADING = false;
+
+function viewTools(){
+  const filtered = AI_TOOLS.filter(t =>
+    (UI.toolCategory==='All' || t.category===UI.toolCategory) &&
+    (t.name.toLowerCase().includes(UI.toolSearch.toLowerCase()) || t.desc.toLowerCase().includes(UI.toolSearch.toLowerCase()))
+  );
+  return `
+  <div class="fade-up">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; gap:16px; flex-wrap:wrap;">
+      <div>
+        <h1 class="font-head" style="font-size:24px; font-weight:700;">AI Tools</h1>
+        <p style="color:var(--muted); font-size:14px;">Purpose-built AI tools for every task.</p>
+      </div>
+      <div style="position:relative; width:280px;">
+        <input class="input" placeholder="Search tools..." style="padding-left:36px;" value="${escapeHtml(UI.toolSearch)}" oninput="UI.toolSearch=this.value; renderToolsGrid();">
+        <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--muted);">⌕</span>
+      </div>
+    </div>
+    <div class="chip-row" style="margin-bottom:22px;">
+      ${TOOL_CATEGORIES.map(c => `<div class="chip ${UI.toolCategory===c?'active':''}" onclick="UI.toolCategory='${c}'; render();">${c}</div>`).join('')}
+    </div>
+    <div id="tools-grid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:18px;" class="grid-3">
+      ${filtered.length ? filtered.map(toolCard).join('') : `<div style="grid-column:1/-1; text-align:center; color:var(--muted); padding:60px 0;">No tools match your search.</div>`}
+    </div>
+  </div>
+  ${ACTIVE_TOOL ? toolModal() : ''}
+  `;
+}
+
+function renderToolsGrid(){
+  const grid = document.getElementById('tools-grid');
+  if(!grid) return;
+  const filtered = AI_TOOLS.filter(t =>
+    (UI.toolCategory==='All' || t.category===UI.toolCategory) &&
+    (t.name.toLowerCase().includes(UI.toolSearch.toLowerCase()) || t.desc.toLowerCase().includes(UI.toolSearch.toLowerCase()))
+  );
+  grid.innerHTML = filtered.length ? filtered.map(toolCard).join('') : `<div style="grid-column:1/-1; text-align:center; color:var(--muted); padding:60px 0;">No tools match your search.</div>`;
+}
+
+function toolCard(t){
+  const fav = DATA.favTools.includes(t.name);
+  return `<div class="glass glass-hover" style="padding:22px; display:flex; flex-direction:column;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="width:44px;height:44px;border-radius:12px; background:rgba(124,58,237,0.15); display:flex; align-items:center; justify-content:center; font-size:20px; margin-bottom:14px;">${t.icon}</div>
+      <button class="btn-icon" style="padding:6px 9px;" onclick="toggleFavTool('${t.name.replace(/'/g,"\\'")}')">${fav?'★':'☆'}</button>
+    </div>
+    <span class="badge" style="width:fit-content; margin-bottom:10px;">${t.category}</span>
+    <h3 class="font-head" style="font-size:16px; margin-bottom:6px;">${t.name}</h3>
+    <p style="color:var(--muted); font-size:13px; line-height:1.55; margin-bottom:18px; flex:1;">${t.desc}</p>
+    <button class="btn btn-primary btn-sm" style="width:100%;" onclick="launchTool('${t.name.replace(/'/g,"\\'")}')">Use Tool</button>
+  </div>`;
+}
+
+function toggleFavTool(name){
+  if(DATA.favTools.includes(name)) DATA.favTools = DATA.favTools.filter(n=>n!==name);
+  else DATA.favTools.push(name);
+  dbSave(DATA); render();
+}
+
+function launchTool(name){
+  ACTIVE_TOOL = AI_TOOLS.find(t=>t.name===name);
+  TOOL_RESULT = ''; TOOL_LOADING = false;
+  render();
+}
+function closeToolModal(){ ACTIVE_TOOL = null; render(); }
+
+function toolModal(){
+  return `<div class="modal-overlay" onclick="if(event.target===this) closeToolModal();">
+    <div class="glass modal-box" style="max-width:560px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="width:38px;height:38px;border-radius:10px; background:rgba(124,58,237,0.2); display:flex; align-items:center; justify-content:center; font-size:18px;">${ACTIVE_TOOL.icon}</div>
+          <h3 class="font-head" style="font-size:18px;">${ACTIVE_TOOL.name}</h3>
+        </div>
+        <button class="btn-icon" onclick="closeToolModal()">✕</button>
+      </div>
+      <p style="color:var(--muted); font-size:13px; margin-bottom:18px;">${ACTIVE_TOOL.desc}</p>
+      <div class="field" style="margin-bottom:14px;">
+        <label>Your input</label>
+        <textarea id="tool-input" class="input" rows="4" placeholder="Describe what you need..."></textarea>
+      </div>
+      <button class="btn btn-primary" style="width:100%;" onclick="runTool()" ${TOOL_LOADING?'disabled':''}>${TOOL_LOADING? '<span class="spin" style="display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:50%;"></span> Generating...' : 'Generate'}</button>
+      ${TOOL_RESULT ? `
+        <div class="glass" style="padding:16px; margin-top:16px; max-height:260px; overflow-y:auto; font-size:13.5px; line-height:1.6;">${renderMarkdownish(TOOL_RESULT)}</div>
+        <div style="display:flex; gap:8px; margin-top:10px;">
+          <button class="btn btn-ghost btn-sm" onclick="navigator.clipboard?.writeText(\`${TOOL_RESULT.replace(/`/g,"'")}\`); toast('Copied to clipboard.','success');">Copy result</button>
+          <button class="btn btn-ghost btn-sm" onclick="savePromptFromTool()">Save as prompt</button>
+        </div>` : ''}
+    </div>
+  </div>`;
+}
+
+async function runTool(){
+  const input = document.getElementById('tool-input')?.value.trim();
+  if(!input){ toast('Add an input first.', 'error'); return; }
+  TOOL_LOADING = true; render();
+  try{
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:1000,
+        messages:[{ role:'user', content: `You are the "${ACTIVE_TOOL.name}" tool inside an AI SaaS product called Nexora AI. ${ACTIVE_TOOL.desc} Respond directly and usefully to this request:\n\n${input}` }]
+      })
+    });
+    const data = await response.json();
+    const textBlocks = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n');
+    TOOL_RESULT = textBlocks || 'No result generated — try rephrasing your input.';
+    DATA.usage.push({ tool: ACTIVE_TOOL.name, tokens: Math.round((input.length+TOOL_RESULT.length)/4), createdAt: nowISO() });
+    dbSave(DATA);
+  }catch(e){
+    TOOL_RESULT = 'Something went wrong generating a result. Please try again.';
+    toast('Tool request failed.', 'error');
+  }finally{
+    TOOL_LOADING = false; render();
+  }
+}
+
+function savePromptFromTool(){
+  const input = document.getElementById('tool-input')?.value.trim() || '';
+  DATA.prompts.unshift({ id: uid(), title: `${ACTIVE_TOOL.name} prompt`, content: input, category: ACTIVE_TOOL.category, createdAt: nowISO() });
+  dbSave(DATA);
+  toast('Saved to prompts.', 'success');
+}
+/* ============ Files ============ */
+const FILE_ICONS = { pdf:'📕', docx:'📘', txt:'📄', csv:'📊', image:'🖼' };
+let FILE_UPLOADING = false;
+
+function viewFiles(){
+  const filtered = DATA.files.filter(f => f.name.toLowerCase().includes(UI.fileSearch.toLowerCase()));
+  const categories = {};
+  DATA.files.forEach(f => categories[f.type] = (categories[f.type]||0)+1);
+  return `
+  <div class="fade-up">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; gap:16px; flex-wrap:wrap;">
+      <div><h1 class="font-head" style="font-size:24px; font-weight:700;">Files</h1><p style="color:var(--muted); font-size:14px;">Upload documents, spreadsheets, and images for AI analysis.</p></div>
+      <div style="position:relative; width:240px;">
+        <input class="input" placeholder="Search files..." style="padding-left:36px;" value="${escapeHtml(UI.fileSearch)}" oninput="UI.fileSearch=this.value; render();">
+        <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--muted);">⌕</span>
+      </div>
+    </div>
+
+    <div id="dropzone" class="glass" style="padding:38px; text-align:center; border:2px dashed var(--border); margin-bottom:24px; cursor:pointer;"
+      ondragover="event.preventDefault(); this.style.borderColor='var(--accent)';"
+      ondragleave="this.style.borderColor='var(--border)';"
+      ondrop="handleFileDrop(event)"
+      onclick="document.getElementById('file-input-hidden').click()">
+      <div style="font-size:30px; margin-bottom:10px;">${FILE_UPLOADING?'⏳':'⬆️'}</div>
+      <div style="font-weight:700; margin-bottom:6px;">${FILE_UPLOADING? 'Uploading...' : 'Drag & drop files here, or click to browse'}</div>
+      <div style="color:var(--muted); font-size:13px;">Supports PDF, DOCX, TXT, CSV, and images</div>
+      <input id="file-input-hidden" type="file" multiple style="display:none;" onchange="handleFileSelect(event)">
+    </div>
+
+    <div style="display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap;">
+      ${Object.entries(categories).map(([type,count])=>`<span class="badge">${FILE_ICONS[type]||'📄'} ${type.toUpperCase()} · ${count}</span>`).join('') || ''}
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px;" class="grid-3">
+      ${filtered.length ? filtered.map(fileCard).join('') : `<div style="grid-column:1/-1;" class="glass">${emptyState('📁','No files yet','Upload a document to get started with AI analysis.')}</div>`}
+    </div>
+  </div>`;
+}
+
+function fileCard(f){
+  return `<div class="glass glass-hover" style="padding:20px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+      <div style="font-size:28px;">${FILE_ICONS[f.type]||'📄'}</div>
+      <button class="btn-icon" style="padding:5px 8px;" onclick="deleteFile('${f.id}')">🗑</button>
+    </div>
+    <div style="font-weight:600; font-size:14px; margin-bottom:4px; word-break:break-word;">${escapeHtml(f.name)}</div>
+    <div style="color:var(--muted); font-size:12px; margin-bottom:14px;">${fmtBytes(f.size)} · ${fmtRelative(f.createdAt)}</div>
+    ${f.analyzed ? `<span class="badge" style="border-color:rgba(34,211,238,0.4); color:var(--secondary); margin-bottom:10px;">✓ Analyzed</span><br>` : ''}
+    <button class="btn btn-ghost btn-sm" style="width:100%; margin-top:8px;" onclick="analyzeFile('${f.id}')">${f.analyzed ? 'View analysis' : 'Analyze with AI'}</button>
+  </div>`;
+}
+
+function detectFileType(name){
+  const ext = name.split('.').pop().toLowerCase();
+  if(ext==='pdf') return 'pdf';
+  if(ext==='docx'||ext==='doc') return 'docx';
+  if(ext==='txt') return 'txt';
+  if(ext==='csv') return 'csv';
+  if(['png','jpg','jpeg','gif','webp'].includes(ext)) return 'image';
+  return 'txt';
+}
+
+function ingestFiles(fileList){
+  FILE_UPLOADING = true; render();
+  setTimeout(()=>{
+    Array.from(fileList).forEach(f => {
+      DATA.files.unshift({ id: uid(), name: f.name, type: detectFileType(f.name), size: f.size || Math.floor(20000+Math.random()*400000), createdAt: nowISO(), analyzed:false });
+    });
+    dbSave(DATA);
+    FILE_UPLOADING = false;
+    toast(`${fileList.length} file(s) uploaded.`, 'success');
+    render();
+  }, 900);
+}
+function handleFileDrop(e){
+  e.preventDefault(); e.currentTarget.style.borderColor='var(--border)';
+  if(e.dataTransfer.files.length) ingestFiles(e.dataTransfer.files);
+}
+function handleFileSelect(e){ if(e.target.files.length) ingestFiles(e.target.files); }
+function deleteFile(id){ DATA.files = DATA.files.filter(f=>f.id!==id); dbSave(DATA); toast('File deleted.','success'); render(); }
+async function analyzeFile(id){
+  const f = DATA.files.find(f=>f.id===id); if(!f) return;
+  toast('Analyzing file with AI...', 'info');
+  try{
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:1000, messages:[{ role:'user', content:`Give a brief plausible-sounding demo analysis (key topics, summary, and one risk/insight) for a user file named "${f.name}" of type ${f.type}. Keep it concise, 4-6 sentences, since the actual file content is not available in this demo.` }] })
+    });
+    const data = await response.json();
+    const text = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n');
+    f.analyzed = true; f.analysis = text || 'Analysis complete.';
+    DATA.usage.push({ tool:'Document Analyzer', tokens: 300, createdAt: nowISO() });
+    dbSave(DATA);
+    render();
+    setTimeout(()=> alert ? null : null, 0);
+    toast('Analysis ready.', 'success');
+    showFileAnalysis(f);
+  }catch(e){ toast('Analysis failed.', 'error'); }
+}
+function showFileAnalysis(f){
+  document.getElementById('toast-root').insertAdjacentHTML('afterend', `
+  <div class="modal-overlay" id="analysis-modal" onclick="if(event.target===this) this.remove();">
+    <div class="glass modal-box" style="max-width:520px;">
+      <h3 class="font-head" style="margin-bottom:12px;">Analysis — ${escapeHtml(f.name)}</h3>
+      <div style="font-size:13.5px; line-height:1.6; color:var(--text); max-height:300px; overflow-y:auto;">${renderMarkdownish(f.analysis||'')}</div>
+      <button class="btn btn-ghost" style="width:100%; margin-top:16px;" onclick="document.getElementById('analysis-modal').remove()">Close</button>
+    </div>
+  </div>`);
+}
+
+function emptyState(icon,title,sub){
+  return `<div style="padding:60px 20px; text-align:center;">
+    <div style="font-size:36px; margin-bottom:14px;">${icon}</div>
+    <div style="font-weight:700; margin-bottom:6px;">${title}</div>
+    <div style="color:var(--muted); font-size:13.5px;">${sub}</div>
+  </div>`;
+}
+
+/* ============ History ============ */
+function viewHistory(){
+  let list = [...DATA.conversations];
+  if(UI.historySearch) list = list.filter(c => c.title.toLowerCase().includes(UI.historySearch.toLowerCase()));
+  list.sort((a,b)=> new Date(b.updatedAt)-new Date(a.updatedAt));
+  return `
+  <div class="fade-up">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; gap:16px; flex-wrap:wrap;">
+      <div><h1 class="font-head" style="font-size:24px; font-weight:700;">History</h1><p style="color:var(--muted); font-size:14px;">All your past conversations, searchable and organized.</p></div>
+      <div style="position:relative; width:260px;">
+        <input class="input" placeholder="Search conversations..." style="padding-left:36px;" value="${escapeHtml(UI.historySearch)}" oninput="UI.historySearch=this.value; render();">
+        <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--muted);">⌕</span>
+      </div>
+    </div>
+    <div class="glass" style="padding:8px;">
+      ${list.length ? list.map(c => `
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-radius:12px;" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'">
+          <div style="display:flex; align-items:center; gap:12px; min-width:0; cursor:pointer;" onclick="openConversation('${c.id}')">
+            <div style="width:36px;height:36px;border-radius:10px; background:rgba(124,58,237,0.15); display:flex; align-items:center; justify-content:center;">💬</div>
+            <div style="min-width:0;">
+              <div style="font-weight:600; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:360px;">${c.favorite?'★ ':''}${escapeHtml(c.title)}</div>
+              <div style="font-size:12px; color:var(--muted);">${c.messages.length} messages · ${fmtDate(c.updatedAt)}</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:6px;">
+            <button class="btn-icon" style="padding:6px 9px;" title="Favorite" onclick="toggleFavConvo('${c.id}')">${c.favorite?'★':'☆'}</button>
+            <button class="btn-icon" style="padding:6px 9px;" title="Rename" onclick="promptRename('${c.id}')">✎</button>
+            <button class="btn-icon" style="padding:6px 9px;" title="Delete" onclick="deleteConversation('${c.id}')">🗑</button>
+          </div>
+        </div>
+      `).join('') : emptyState('🕘','No conversations found','Start a new chat to see it appear here.')}
+    </div>
+  </div>`;
+}
+function promptRename(id){
+  const c = DATA.conversations.find(c=>c.id===id); if(!c) return;
+  const name = window.prompt('Rename conversation', c.title);
+  if(name){ c.title = name; dbSave(DATA); render(); }
+}
+
+/* ============ Saved Prompts ============ */
+const PROMPT_CATEGORIES = ['All','Productivity','Marketing','Development','Writing','Creative','Analysis'];
+let PROMPT_CAT_FILTER = 'All';
+
+function viewPrompts(){
+  let list = DATA.prompts.filter(p => (PROMPT_CAT_FILTER==='All'||p.category===PROMPT_CAT_FILTER) && p.title.toLowerCase().includes(UI.promptSearch.toLowerCase()));
+  return `
+  <div class="fade-up">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; gap:16px; flex-wrap:wrap;">
+      <div><h1 class="font-head" style="font-size:24px; font-weight:700;">Saved Prompts</h1><p style="color:var(--muted); font-size:14px;">Reusable prompts, organized by category.</p></div>
+      <div style="display:flex; gap:10px;">
+        <div style="position:relative; width:220px;">
+          <input class="input" placeholder="Search prompts..." style="padding-left:36px;" value="${escapeHtml(UI.promptSearch)}" oninput="UI.promptSearch=this.value; render();">
+          <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--muted);">⌕</span>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="openPromptEditor()">+ New prompt</button>
+      </div>
+    </div>
+    <div class="chip-row" style="margin-bottom:20px;">
+      ${PROMPT_CATEGORIES.map(c=>`<div class="chip ${PROMPT_CAT_FILTER===c?'active':''}" onclick="PROMPT_CAT_FILTER='${c}'; render();">${c}</div>`).join('')}
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:16px;" class="grid-2">
+      ${list.length ? list.map(promptCard).join('') : `<div style="grid-column:1/-1;" class="glass">${emptyState('★','No saved prompts','Save prompts from AI Tools or create one from scratch.')}</div>`}
+    </div>
+  </div>
+  ${PROMPT_MODAL_OPEN ? promptEditorModal() : ''}
+  `;
+}
+function promptCard(p){
+  return `<div class="glass glass-hover" style="padding:20px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+      <span class="badge">${p.category}</span>
+      <div style="display:flex; gap:6px;">
+        <button class="btn-icon" style="padding:5px 8px;" onclick="navigator.clipboard?.writeText(\`${p.content.replace(/`/g,"'")}\`); toast('Prompt copied.','success');">⧉</button>
+        <button class="btn-icon" style="padding:5px 8px;" onclick="openPromptEditor('${p.id}')">✎</button>
+        <button class="btn-icon" style="padding:5px 8px;" onclick="deletePrompt('${p.id}')">🗑</button>
+      </div>
+    </div>
+    <div style="font-weight:700; font-size:14.5px; margin-bottom:6px;">${escapeHtml(p.title)}</div>
+    <p style="color:var(--muted); font-size:13px; line-height:1.55; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;">${escapeHtml(p.content)}</p>
+  </div>`;
+}
+let PROMPT_MODAL_OPEN = false;
+let PROMPT_EDIT_ID = null;
+function openPromptEditor(id=null){ PROMPT_MODAL_OPEN = true; PROMPT_EDIT_ID = id; render(); }
+function closePromptEditor(){ PROMPT_MODAL_OPEN = false; PROMPT_EDIT_ID = null; render(); }
+function promptEditorModal(){
+  const editing = PROMPT_EDIT_ID ? DATA.prompts.find(p=>p.id===PROMPT_EDIT_ID) : null;
+  return `<div class="modal-overlay" onclick="if(event.target===this) closePromptEditor();">
+    <div class="glass modal-box">
+      <h3 class="font-head" style="margin-bottom:16px;">${editing?'Edit prompt':'New prompt'}</h3>
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <div class="field"><label>Title</label><input id="prompt-title" class="input" value="${editing?escapeHtml(editing.title):''}" placeholder="e.g. Blog outline generator"></div>
+        <div class="field"><label>Category</label>
+          <select id="prompt-category" class="input">
+            ${PROMPT_CATEGORIES.filter(c=>c!=='All').map(c=>`<option ${editing&&editing.category===c?'selected':''}>${c}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field"><label>Prompt content</label><textarea id="prompt-content" class="input" rows="4">${editing?escapeHtml(editing.content):''}</textarea></div>
+      </div>
+      <div style="display:flex; gap:10px; margin-top:18px;">
+        <button class="btn btn-ghost" style="flex:1;" onclick="closePromptEditor()">Cancel</button>
+        <button class="btn btn-primary" style="flex:1;" onclick="savePrompt()">Save prompt</button>
+      </div>
+    </div>
+  </div>`;
+}
+function savePrompt(){
+  const title = document.getElementById('prompt-title').value.trim() || 'Untitled prompt';
+  const category = document.getElementById('prompt-category').value;
+  const content = document.getElementById('prompt-content').value.trim();
+  if(PROMPT_EDIT_ID){
+    const p = DATA.prompts.find(p=>p.id===PROMPT_EDIT_ID);
+    Object.assign(p, { title, category, content });
+  } else {
+    DATA.prompts.unshift({ id: uid(), title, category, content, createdAt: nowISO() });
+  }
+  dbSave(DATA);
+  toast('Prompt saved.', 'success');
+  closePromptEditor();
+}
+function deletePrompt(id){ DATA.prompts = DATA.prompts.filter(p=>p.id!==id); dbSave(DATA); toast('Prompt deleted.','success'); render(); }
+/* ============ Analytics ============ */
+function viewAnalytics(){
+  const usage = DATA.usage;
+  const totalReqs = usage.length;
+  const totalTokens = usage.reduce((s,u)=>s+u.tokens,0);
+  const toolCounts = {};
+  usage.forEach(u => toolCounts[u.tool] = (toolCounts[u.tool]||0)+1);
+  const topTools = Object.entries(toolCounts).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const maxTool = Math.max(1, ...topTools.map(t=>t[1]));
+
+  // weekly (last 7 days) vs monthly (last 30 days)
+  const daysBack = (n) => usage.filter(u => Date.now() - new Date(u.createdAt).getTime() <= n*86400000).length;
+  const weekly = daysBack(7), monthly = daysBack(30);
+
+  return `
+  <div class="fade-up">
+    <h1 class="font-head" style="font-size:24px; font-weight:700; margin-bottom:4px;">Analytics</h1>
+    <p style="color:var(--muted); font-size:14px; margin-bottom:24px;">Understand how you're using Nexora AI.</p>
+
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:20px;" class="grid-4">
+      ${statCard('Total Requests', fmtNum(totalReqs), '📈', 'All time')}
+      ${statCard('Token Usage', fmtNum(totalTokens), '⚡', 'All time')}
+      ${statCard('This Week', fmtNum(weekly), '🗓', 'Last 7 days')}
+      ${statCard('This Month', fmtNum(monthly), '📆', 'Last 30 days')}
+    </div>
+
+    <div style="display:grid; grid-template-columns:1.3fr 1fr; gap:20px; margin-bottom:20px;" class="grid-2">
+      <div class="glass" style="padding:24px;">
+        <h3 class="font-head" style="font-size:16px; margin-bottom:16px;">Daily usage — last 28 days</h3>
+        ${dailyBarChart()}
+      </div>
+      <div class="glass" style="padding:24px;">
+        <h3 class="font-head" style="font-size:16px; margin-bottom:16px;">Most used tools</h3>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          ${topTools.length ? topTools.map(([name,count]) => `
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:5px;"><span>${name}</span><span style="color:var(--muted);">${count}</span></div>
+              <div style="height:7px; border-radius:99px; background:rgba(255,255,255,0.05); overflow:hidden;">
+                <div style="height:100%; width:${(count/maxTool)*100}%; background:linear-gradient(90deg, var(--primary), var(--secondary)); border-radius:99px;"></div>
+              </div>
+            </div>`).join('') : emptyState('📊','No data yet','Use an AI tool to start generating analytics.')}
+        </div>
+      </div>
+    </div>
+
+    <div class="glass" style="padding:24px;">
+      <h3 class="font-head" style="font-size:16px; margin-bottom:16px;">Weekly activity breakdown</h3>
+      ${weeklyActivityChart()}
+    </div>
+  </div>`;
+}
+
+function dailyBarChart(){
+  const days = [];
+  for(let i=27;i>=0;i--){
+    const d = new Date(Date.now()-i*86400000);
+    const key = d.toDateString();
+    const count = DATA.usage.filter(u=> new Date(u.createdAt).toDateString()===key).length;
+    days.push(count);
+  }
+  const max = Math.max(1, ...days);
+  return `<div style="display:flex; align-items:flex-end; gap:4px; height:140px;">
+    ${days.map(c => `<div style="flex:1; height:${Math.max(3,(c/max)*120)}px; background:linear-gradient(180deg, var(--secondary), var(--primary)); border-radius:4px 4px 2px 2px; opacity:${c?0.9:0.15};" title="${c} requests"></div>`).join('')}
+  </div>`;
+}
+
+function weeklyActivityChart(){
+  const labels = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const counts = [0,0,0,0,0,0,0];
+  DATA.usage.forEach(u => { const day = (new Date(u.createdAt).getDay()+6)%7; counts[day]++; });
+  const max = Math.max(1, ...counts);
+  return `<div style="display:grid; grid-template-columns:repeat(7,1fr); gap:14px;">
+    ${labels.map((l,i)=>`
+      <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+        <div style="width:100%; height:90px; display:flex; align-items:flex-end;">
+          <div style="width:100%; height:${Math.max(4,(counts[i]/max)*90)}px; background:linear-gradient(180deg, var(--accent), var(--primary)); border-radius:8px 8px 3px 3px;"></div>
+        </div>
+        <span style="font-size:12px; color:var(--muted);">${l}</span>
+      </div>`).join('')}
+  </div>`;
+}
+
+/* ============ Billing ============ */
+function viewBilling(){
+  const plan = DATA.plan;
+  return `
+  <div class="fade-up" style="max-width:900px;">
+    <h1 class="font-head" style="font-size:24px; font-weight:700; margin-bottom:4px;">Billing</h1>
+    <p style="color:var(--muted); font-size:14px; margin-bottom:24px;">Manage your subscription and payment details.</p>
+
+    <div class="glass" style="padding:24px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+      <div>
+        <div style="color:var(--muted); font-size:13px; margin-bottom:6px;">Current plan</div>
+        <div class="font-head" style="font-size:22px; font-weight:700;">${plan}</div>
+      </div>
+      <div style="display:flex; gap:10px;">
+        ${plan!=='Business' ? `<button class="btn btn-primary" onclick="upgradePlan('Pro')">Upgrade to Pro</button>` : ''}
+        ${plan==='Free' ? `<button class="btn btn-ghost" onclick="upgradePlan('Business')">Go Business</button>` : ''}
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px;" class="grid-3">
+      ${pricingCard('Free','$0','/month', ['50 AI requests / month','Core AI tools','1 GB file storage'], plan==='Free')}
+      ${pricingCard('Pro','$24','/month', ['Unlimited AI requests','All AI tools + priority models','50 GB file storage'], plan==='Pro')}
+      ${pricingCard('Business','$59','/user/month', ['Everything in Pro','Team workspaces','Admin & usage controls'], plan==='Business')}
+    </div>
+  </div>`;
+}
+function upgradePlan(p){ DATA.plan = p; dbSave(DATA); toast(`Upgraded to ${p} plan!`, 'success'); render(); }
+
+/* ============ Settings ============ */
+const SETTINGS_TABS = [
+  { id:'profile', label:'Profile' },
+  { id:'account', label:'Account' },
+  { id:'security', label:'Security' },
+  { id:'notifications', label:'Notifications' },
+  { id:'appearance', label:'Appearance' },
+  { id:'ai', label:'AI Preferences' },
+];
+
+function viewSettings(){
+  return `
+  <div class="fade-up">
+    <h1 class="font-head" style="font-size:24px; font-weight:700; margin-bottom:4px;">Settings</h1>
+    <p style="color:var(--muted); font-size:14px; margin-bottom:24px;">Manage your profile, security, and AI preferences.</p>
+    <div style="display:grid; grid-template-columns:200px 1fr; gap:24px;" class="settings-grid">
+      <div style="display:flex; flex-direction:column; gap:4px;">
+        ${SETTINGS_TABS.map(t=>`<div onclick="UI.settingsTab='${t.id}'; render();" style="padding:10px 14px; border-radius:10px; cursor:pointer; font-size:13.5px; font-weight:600; color:${UI.settingsTab===t.id?'#fff':'var(--muted)'}; background:${UI.settingsTab===t.id?'rgba(124,58,237,0.2)':'transparent'};">${t.label}</div>`).join('')}
+      </div>
+      <div class="glass" style="padding:28px;">${settingsPanel()}</div>
+    </div>
+  </div>
+  <style>@media (max-width:800px){ .settings-grid{ grid-template-columns:1fr !important; } }</style>
+  `;
+}
+
+function settingsPanel(){
+  const u = DATA.user, s = DATA.settings;
+  if(UI.settingsTab==='profile'){
+    return `
+    <h3 class="font-head" style="font-size:17px; margin-bottom:20px;">Profile</h3>
+    <div style="display:flex; align-items:center; gap:16px; margin-bottom:24px;">
+      <div style="width:64px;height:64px;border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--secondary)); display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:700;">${u.avatar}</div>
+      <button class="btn btn-ghost btn-sm" onclick="toast('Avatar upload is available on Pro workspaces.','info')">Change avatar</button>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:16px; max-width:420px;">
+      <div class="field"><label>Full name</label><input id="settings-name" class="input" value="${escapeHtml(u.name)}"></div>
+      <div class="field"><label>Email</label><input id="settings-email" class="input" value="${escapeHtml(u.email)}"></div>
+      <button class="btn btn-primary" style="width:fit-content;" onclick="saveProfile()">Save changes</button>
+    </div>`;
+  }
+  if(UI.settingsTab==='account'){
+    return `
+    <h3 class="font-head" style="font-size:17px; margin-bottom:20px;">Account</h3>
+    <div style="display:flex; flex-direction:column; gap:16px; max-width:420px;">
+      <div><div style="font-size:13px; color:var(--muted);">Member since</div><div style="font-weight:600;">${fmtDate(u.createdAt)}</div></div>
+      <div><div style="font-size:13px; color:var(--muted);">Current plan</div><div style="font-weight:600;">${DATA.plan}</div></div>
+      <button class="btn btn-ghost" style="width:fit-content; color:#ff8fa3; border-color:rgba(255,90,120,0.3);" onclick="confirmDeleteAccount()">Delete account</button>
+    </div>`;
+  }
+  if(UI.settingsTab==='security'){
+    return `
+    <h3 class="font-head" style="font-size:17px; margin-bottom:20px;">Security</h3>
+    <div style="display:flex; flex-direction:column; gap:16px; max-width:420px;">
+      <div class="field"><label>Current password</label><input type="password" id="cur-pass" class="input" placeholder="••••••••"></div>
+      <div class="field"><label>New password</label><input type="password" id="new-pass" class="input" placeholder="Min. 8 characters"></div>
+      <button class="btn btn-primary" style="width:fit-content;" onclick="changePassword()">Update password</button>
+    </div>`;
+  }
+  if(UI.settingsTab==='notifications'){
+    return `
+    <h3 class="font-head" style="font-size:17px; margin-bottom:20px;">Notifications</h3>
+    <div style="display:flex; flex-direction:column; gap:16px; max-width:460px;">
+      ${toggleRow('notifyEmail','Email notifications','Get notified about important account activity.')}
+      ${toggleRow('notifyProduct','Product updates','News about new features and AI tools.')}
+      ${toggleRow('notifyUsage','Usage alerts','Alerts when you approach your plan limits.')}
+    </div>`;
+  }
+  if(UI.settingsTab==='appearance'){
+    return `
+    <h3 class="font-head" style="font-size:17px; margin-bottom:20px;">Appearance</h3>
+    <div style="display:flex; gap:14px;">
+      <div class="glass" style="padding:16px; width:140px; text-align:center; border-color:var(--accent);">
+        <div style="width:100%; height:70px; border-radius:8px; background:var(--bg); border:1px solid var(--border); margin-bottom:10px;"></div>
+        <div style="font-size:13px; font-weight:600;">Dark (active)</div>
+      </div>
+      <div class="glass" style="padding:16px; width:140px; text-align:center; opacity:.5; cursor:not-allowed;">
+        <div style="width:100%; height:70px; border-radius:8px; background:#f4f1ea; margin-bottom:10px;"></div>
+        <div style="font-size:13px; font-weight:600;">Light (soon)</div>
+      </div>
+    </div>`;
+  }
+  if(UI.settingsTab==='ai'){
+    return `
+    <h3 class="font-head" style="font-size:17px; margin-bottom:20px;">AI Preferences</h3>
+    <div style="display:flex; flex-direction:column; gap:18px; max-width:440px;">
+      <div class="field"><label>Default AI model</label>
+        <select id="default-model" class="input" onchange="DATA.settings.defaultModel=this.value; dbSave(DATA); toast('Preference saved.','success');">
+          ${MODEL_OPTIONS.map(m=>`<option value="${m.id}" ${s.defaultModel===m.id?'selected':''}>${m.label}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field"><label>Response length</label>
+        <select id="response-length" class="input" onchange="DATA.settings.responseLength=this.value; dbSave(DATA); toast('Preference saved.','success');">
+          <option value="concise" ${s.responseLength==='concise'?'selected':''}>Concise</option>
+          <option value="balanced" ${s.responseLength==='balanced'?'selected':''}>Balanced</option>
+          <option value="detailed" ${s.responseLength==='detailed'?'selected':''}>Detailed</option>
+        </select>
+      </div>
+    </div>`;
+  }
+}
+
+function toggleRow(key,label,sub){
+  const on = DATA.settings[key];
+  return `<div style="display:flex; justify-content:space-between; align-items:center;">
+    <div><div style="font-weight:600; font-size:14px;">${label}</div><div style="color:var(--muted); font-size:12.5px;">${sub}</div></div>
+    <div onclick="DATA.settings.${key}=!DATA.settings.${key}; dbSave(DATA); render();" style="width:44px; height:26px; border-radius:99px; background:${on?'linear-gradient(135deg,var(--primary),var(--secondary))':'rgba(255,255,255,0.1)'}; position:relative; cursor:pointer; transition:.2s;">
+      <div style="width:20px; height:20px; border-radius:50%; background:#fff; position:absolute; top:3px; left:${on?'21px':'3px'}; transition:.2s;"></div>
+    </div>
+  </div>`;
+}
+
+function saveProfile(){
+  const name = document.getElementById('settings-name').value.trim();
+  const email = document.getElementById('settings-email').value.trim();
+  DATA.user.name = name || DATA.user.name;
+  DATA.user.email = email || DATA.user.email;
+  DATA.user.avatar = DATA.user.name.split(' ').map(n=>n[0]).slice(0,2).join('').toUpperCase();
+  dbSave(DATA);
+  toast('Profile updated.', 'success');
+  render();
+}
+function changePassword(){
+  const cur = document.getElementById('cur-pass').value;
+  const next = document.getElementById('new-pass').value;
+  if(cur !== DATA.user.password){ toast('Current password is incorrect.', 'error'); return; }
+  if(next.length < 8){ toast('New password must be at least 8 characters.', 'error'); return; }
+  DATA.user.password = next; dbSave(DATA);
+  toast('Password updated.', 'success'); render();
+}
+function confirmDeleteAccount(){
+  if(confirm('This will permanently delete your Nexora AI workspace. Continue?')){
+    window.storage.delete(DB_KEY, false).catch(()=>{});
+    DATA = null; VIEW = 'landing';
+    toast('Account deleted.', 'info');
+    render();
+  }
+}
+
+</script>
+</body>
+</html>
